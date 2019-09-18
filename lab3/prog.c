@@ -3,18 +3,38 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <signal.h>
-
-void handler(int);
+#include <sys/time.h>
 
 void handler(int sig){
+  if (sig == SIGUSR1){
     printf(" Caught signal %d\n", sig);
     kill(0, sig);
+  }
+  else if (sig == SIGUSR2){
+    printf(" Caught signal %d\n", sig);
+    kill(0, sig);
+  }
+  else if (sig == SIGINT){
+    printf(" Caught signal %d\n", sig);
+    kill(0, sig);
+  }
+  printf("handler");
 }
 
 int main(){
 
   pid_t pid;
-  //pid = fork();
+  time_t t;
+  int fd[2];
+
+  signal(SIGUSR1, handler);
+  signal(SIGUSR2, handler);
+  signal(SIGINT, handler);
+
+  if (pipe (fd) < 0) { 
+        perror ("plumbing problem"); 
+        exit(1); 
+  } 
 
   if ((pid =  fork()) < 0){
     perror("fork failed");
@@ -23,13 +43,15 @@ int main(){
 
   else if (pid == 0){
     //Child process
+    srand((unsigned) time(&t));
+    wait(rand() % 5);
     printf("child");
-    sleep(5);
-    signal(SIGINT, handler);
+    //kill(pid, SIGUSR2);
   }
   else{
   //Parent process
-  //signal(SIGINT, handler);
+  signal(SIGUSR1, handler);
+  signal(SIGUSR2, handler);
   sleep(10);
   }
   return 0;
