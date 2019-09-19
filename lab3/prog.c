@@ -6,6 +6,8 @@
 #include <signal.h>
 #include <time.h>
 
+//Authors: James Lund, Zachary Thomas
+
 void handler(int sig){
   if (sig == SIGUSR1){
     printf(" Caught signal SIGUSR1\n");
@@ -25,41 +27,39 @@ void handler(int sig){
 
 int main(){
   pid_t parent, pid;
-  int status, sleptfor;
-  printf("spawned child PID# %d\n", pid);
-  while(1){
+  int sleptfor;
+  
+  parent = getpid();
+  signal(SIGUSR1, handler);
+  signal(SIGUSR2, handler);
 
-	  parent = getpid();
-	  signal(SIGUSR1, handler);
-	  signal(SIGUSR2, handler);
-	  signal(SIGINT, handler);
+  if ((pid =  fork()) < 0){
+    perror("fork failed");
+    exit(1);
+  }
+  else if (pid == 0){
+    //Child process
+    while(1){
+      sleptfor = rand() % 5 + 1;
+      if (sleptfor % 2 == 0){
+        sleep(sleptfor);
+        kill(parent, SIGUSR1);
+      }
+      else{
+        sleep(sleptfor);
+        kill(parent, SIGUSR2);
+      }
+    }
+  }
+  else{
+    //Parent process
+    signal(SIGINT, handler);
+    printf("spawned child PID# %d\n", pid);
 
-	  srand(time(NULL));
-	  sleptfor = (rand() % 5); 
-
-	  if ((pid =  fork()) < 0){
-	    perror("fork failed");
-	    exit(1);
-	  }
-	  else if (pid == 0){
-	    //Child process
-	    while(1){
-	    if (sleptfor % 2 == 0){
-	      sleep(sleptfor);
-	      kill(parent, SIGUSR1);
-	    }
-	    else{
-	      sleep(sleptfor);
-	      kill(parent, SIGUSR2);
-	    }
-	    exit(0);
-	  }
-	  }
-	  else{
-	  //Parent process
-	  printf("waiting...\t");
-	  wait(&status);
-	  }
+    while(1){
+      printf("waiting...\t");
+      pause();
+    }
   }
   return 0;
 }
