@@ -14,11 +14,11 @@ void handler(int sig){
     printf(" Caught signal SIGUSR2\n");
   }
   else if (sig == SIGINT){
-    printf(" Shutting down...\n");
+    printf("That's it. I'm shutting you down...\n");
     exit(0);
   }
   else{
-    printf(stderr, "Signal error\n");
+    printf("Error");
   }
 }
 
@@ -26,9 +26,7 @@ void handler(int sig){
 int main(){
   pid_t parent, pid;
   int status, sleptfor;
-  time_t t;
-  int fd[2];
-
+  printf("spawned child PID# %d\n", pid);
   while(1){
 
 	  parent = getpid();
@@ -36,27 +34,30 @@ int main(){
 	  signal(SIGUSR2, handler);
 	  signal(SIGINT, handler);
 
+	  srand(time(NULL));
+	  sleptfor = (rand() % 5); 
+
 	  if ((pid =  fork()) < 0){
 	    perror("fork failed");
 	    exit(1);
 	  }
-
 	  else if (pid == 0){
 	    //Child process
-	    srand((unsigned) time(&t));
-	    sleptfor = (rand() % 5);
+	    while(1){
 	    if (sleptfor % 2 == 0){
 	      sleep(sleptfor);
 	      kill(parent, SIGUSR1);
 	    }
 	    else{
+	      sleep(sleptfor);
 	      kill(parent, SIGUSR2);
-	      exit(0);
 	    }
+	    exit(0);
+	  }
 	  }
 	  else{
 	  //Parent process
-	  printf("Waiting on child...");
+	  printf("waiting...\t");
 	  wait(&status);
 	  }
   }
