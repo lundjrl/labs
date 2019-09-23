@@ -1,0 +1,16 @@
+checkout critical section on paths of threads in the textbook
+"solution to Critical-Section problem"
+page 228 of text
+
+1. mutual exclusion: no collision (when one is in a process, the other pisses off)
+	prob: p0, p1 in crit sec simultanously <- violation of mutual ex
+
+2. Progress (problems with):
+	A) progress: a process (p1) is not stuck
+		ex: p0 is blocked when p1 is not interested in crit sec
+	B) progress: when both are blocked (no deadlock)
+		ex: p0 and p1 are both blocked 
+3. Bounded wait: no starvation 
+	(you don't know when you'll eat again) 
+	There is no guarantee when a thread will get data
+	Problem: p0 blocked p1 goes repeatedly
