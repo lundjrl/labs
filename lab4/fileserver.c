@@ -21,7 +21,8 @@ int main(int argc, char* argv[]){
 
 	char input[50];
 	int status;
-	FILE *fp;
+	char *buffer = (malloc(500)); 
+
 	while(!signal(SIGINT, handler)){
 	//User input and prompt
 	printf("Please input a file: \n");
@@ -30,7 +31,7 @@ int main(int argc, char* argv[]){
 	//Thread ID
 	pthread_t dispatcher;
 	
-		if ((status = pthread_create (&dispatcher, NULL, createWorker, &name[0])) != 0 ){
+		if ((status = pthread_create (&dispatcher, NULL, createWorker, (void *)&buffer)) != 0 ){
 			fprintf (stderr, "Failed to create thread %d: %s\n", status, strerror(status));
 			exit(1);
 		}
@@ -39,15 +40,15 @@ int main(int argc, char* argv[]){
 	return 0;
 }
 
-void* createWorker(void* arg){
+void* createWorker(void* file){
 	pthread_t wt1;
 	int status;
 
-	char *name_ptr = (char *) arg;
+	//char *name_ptr = (char *) file;
 	// Make a loop for amount of child threads spawned and set name from array created above. 
 
-	printf("Creating worker named:  %c\n", *name_ptr);
-	if ((status = pthread_create(&wt1, NULL, processFile, &name[0])) != 0){
+	printf("Creating worker named:  %c\n", *file);
+	if ((status = pthread_create(&wt1, NULL, processFile, file)) != 0){
 		fprintf(stderr, "Failed to create worker. Error %d: %d\n", status, stderror(status));
 		exit(1);
 	}
@@ -71,7 +72,7 @@ void* processFile(void* arg){
 		random = 1;
 
 	//Input down below should be the filepointer we pass via threads
-	printf("Found file %d", input, " In %d", random, " seconds!\n");
+	printf("Found file %d", arg, " In %d", random, " seconds!\n");
 	}
 	return NULL;
 }

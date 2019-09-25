@@ -14,3 +14,27 @@ page 228 of text
 	(you don't know when you'll eat again) 
 	There is no guarantee when a thread will get data
 	Problem: p0 blocked p1 goes repeatedly
+
+
+Thoughts on lab:
+- Buffer for inputted files??
+- Don't need to literally input files, just input a string with a file name. This is a simulated file server.
+
+
+Algorithm3
+1. flag[i] = T;
+2. while(flag[j])
+3. 	;
+4. //CS
+5. flag[i] = F;
+
+Both processes would start at the same time, set their flag to true, then realize that the other process's flag is true so they block themselves/each other.
+
+Algorithm4
+1. while(flag[j])
+2. 	;
+3. flag[i] = T;
+4. //CS
+5. flag[i] = F;
+
+Since process 0 sets the flag to T after the while loop, process 1 will constantly be blocked. Process 0 starts before process 1.
