@@ -67,7 +67,9 @@ void* createWorker(void* arg){
 
 void* processFile(void* arg){
 	int probability, random;
-	char *fileName = (char *) arg;
+	//char *fileName = (char *) arg;
+	char fileName[20];
+	strcpy(fileName, (char *) arg);
 	probability = (rand() % 5 + 1);
 	if (probability == 1){ //not found requested file
 		random = (rand() % (10 - 7 + 1)) + 7;
