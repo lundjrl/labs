@@ -19,14 +19,14 @@ char name[10] = {'a','b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
 
 int main(int argc, char* argv[]){
 
-	char input[50];
+	//char input[50];
 	int status;
 	char *buffer = (malloc(500)); 
 
 	while(!signal(SIGINT, handler)){
 	//User input and prompt
 	printf("Please input a file: \n");
-	fgets(input, 50, stdin);
+	fgets(buffer, 50, stdin);
 	
 	//Thread ID
 	pthread_t dispatcher;
@@ -47,7 +47,7 @@ void* createWorker(void* file){
 	//char *name_ptr = (char *) file;
 	// Make a loop for amount of child threads spawned and set name from array created above. 
 
-	printf("Creating worker named:  %c\n", *file);
+	printf("Creating worker named:  %c\n", file);
 	if ((status = pthread_create(&wt1, NULL, processFile, file)) != 0){
 		fprintf(stderr, "Failed to create worker. Error %d: %d\n", status, stderror(status));
 		exit(1);
