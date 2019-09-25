@@ -14,6 +14,9 @@ void handler(int sig){
 	//Print out basic stats i.e. total # of file requests received
 }
 
+char name[10] = {'a','b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
+
+
 int main(int argc, char* argv[]){
 
 	char input[50];
@@ -27,7 +30,7 @@ int main(int argc, char* argv[]){
 	//Thread ID
 	pthread_t dispatcher;
 	
-		if ((status = pthread_create (&dispatcher, NULL, createWorker, input)) != 0 ){
+		if ((status = pthread_create (&dispatcher, NULL, createWorker, &name[0])) != 0 ){
 			fprintf (stderr, "Failed to create thread %d: %s\n", status, strerror(status));
 			exit(1);
 		}
@@ -39,12 +42,13 @@ int main(int argc, char* argv[]){
 void* createWorker(void* arg){
 	pthread_t wt1;
 	int status;
-	int random;
-	int probability;
 
-	printf("Creating worker named %d:  %s\n", &wt1);
-	if ((status = pthread_create(&wt1, NULL, processFile, input)) != 0){
-		fprintf(stderr, "Failed to create worker. Error %d: %s\n", status, stderror(status));
+	char *name_ptr = (char *) arg;
+	// Make a loop for amount of child threads spawned and set name from array created above. 
+
+	printf("Creating worker named:  %c\n", *name_ptr);
+	if ((status = pthread_create(&wt1, NULL, processFile, &name[0])) != 0){
+		fprintf(stderr, "Failed to create worker. Error %d: %d\n", status, stderror(status));
 		exit(1);
 	}
 
@@ -65,7 +69,10 @@ void* processFile(void* arg){
 	else{ //Finds the requested file in a timely manner
 		sleep(1);
 		random = 1;
+
+	//Input down below should be the filepointer we pass via threads
 	printf("Found file %d", input, " In %d", random, " seconds!\n");
+	}
 	return NULL;
 }
 
