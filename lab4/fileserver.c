@@ -6,7 +6,6 @@
 #include <signal.h>
 
 //Global shared data??
-char name[10] = {'a','b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'};
 int numberOfRequests = 0;
 
 void* processFile(void* arg);
@@ -24,25 +23,24 @@ int main(int argc, char* argv[]){
 
 	char input[50];
 	int status;
-	//char *buffer = (malloc(500)); 
 	signal(SIGINT, handler);
 
 	while(1){
 	//User input and prompt
 	printf("Please input a file: ");
-	fgets(input, 50, stdin); //buffer 
-	
+	//fgets(input, 50, stdin); //buffer 
+	scanf("%s", input);
 	//Thread ID
 	pthread_t dispatcher;
 	
-		if ((status = pthread_create (&dispatcher, NULL, createWorker, &input)) != 0 ){
-			fprintf (stderr, "Failed to create thread %d: %s\n", status, strerror(status));
-			exit(1);
-		}
+	if ((status = pthread_create (&dispatcher, NULL, createWorker, &input)) != 0 ){
+		fprintf (stderr, "Failed to create thread %d: %s\n", status, strerror(status));
+		exit(1);
+	}
+	numberOfRequests++;
 
 	}
 
-	//signal(SIGINT, handler);
 	return 0;
 }
 
@@ -52,11 +50,9 @@ void* createWorker(void* arg){
 
 	char *workerName = (char *) arg;
 
-	//char *name_ptr = (char *) file;
 	// Make a loop for amount of child threads spawned and set name from array created above. 
 
 	printf("\nFinding file named:  %s\n", workerName);
-	numberOfRequests++;
 	if ((status = pthread_create(&wt1, NULL, processFile, workerName)) != 0){
 		fprintf(stderr, "Failed to create worker. Error %d: %s\n", status, strerror(status));
 		exit(1);
@@ -67,7 +63,6 @@ void* createWorker(void* arg){
 
 void* processFile(void* arg){
 	int probability, random;
-	//char *fileName = (char *) arg;
 	char fileName[20];
 	strcpy(fileName, (char *) arg);
 	probability = (rand() % 5 + 1);
@@ -83,9 +78,7 @@ void* processFile(void* arg){
 		random = 1;
 	}
 	//Input down below should be the filepointer we pass via threads
-	printf("\nFound file %s", fileName);
-	//printf(" In %d", random); //buffer
-	//printf(" seconds!\n");
+	printf("\nFound file %s\n", fileName);
 	return NULL;
 }
 
