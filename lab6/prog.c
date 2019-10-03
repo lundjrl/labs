@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 
 #define SIZE 16
-
+//FREE YOUR RESOURCES, MAKE SURE EVERY LINE OF CODE IS USED
 int main (int argc, char* argv[])
 {
    int status;
