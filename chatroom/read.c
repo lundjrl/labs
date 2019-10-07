@@ -16,12 +16,14 @@ void handle(int sig){
     exit(0);
 }
 
-
+// Read
 int main(int argc, char* argv[]){
 
     int shmId;
     struct shared *shmSTRT;
     key_t shmKEY = ftok("R.c", 'Z');
+    char username[50];
+    char messageHolder[50];
 
     signal(SIGINT, handle);
 
@@ -34,21 +36,27 @@ int main(int argc, char* argv[]){
         exit(1);
     }
 
+    printf("Please enter username: ");
+    scanf("%s\n", username);
+    strcat(username, " > ");
+    printf("You're now in the chatroom. Enjoy!\n");
+
     while(1){
         // See if we can read
         // Wait
         while (shmSTRT->turn == 'w')
           ;
+        // Print message
+        printf("%s\n", shmSTRT->message);
 
-        printf("Message recieved: %s\n", shmSTRT->message);
+        // Send new message
+        printf("%s > ", username);
+        fgets(messageHolder, sizeof(shmSTRT->message), stdin);
+        strcat(shmSTRT->message, username);
+        strcat(shmSTRT->message, messageHolder);
+
         // Finished, time to write
         shmSTRT->turn = 'w';
-        
-        if(shmSTRT->turn == 'r'){
-            printf("What would you like the world to see? ");
-            fgets(shmSTRT->message, sizeof(shmSTRT->message), stdin);
-            shmSTRT->turn = 'w';
-        }
     }
 
     if (shmdt (shmSTRT) < 0) {

@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <signal.h>
 
-//Global shared data??
+//Global shared data and function prototypes
 int numberOfRequests = 0;
 
 void* processFile(void* arg);
@@ -28,8 +28,8 @@ int main(int argc, char* argv[]){
 	while(1){
 	//User input and prompt
 	printf("Please input a file: ");
-	//fgets(input, 50, stdin); //buffer 
 	scanf("%s", input);
+
 	//Thread ID
 	pthread_t dispatcher;
 	
@@ -69,9 +69,6 @@ void* processFile(void* arg){
 	if (probability == 1){ //not found requested file
 		random = (rand() % (10 - 7 + 1)) + 7;
 		sleep(random);
-		//block thread
-		//while(someconditional)
-		//;
 	}
 	else{ //Finds the requested file in a timely manner
 		sleep(1);

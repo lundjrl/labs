@@ -1,0 +1,21 @@
+char filename[MAXCHAR];
+
+int main(){
+
+fgets(filename, MAX-1, stdin);
+pthread_create(&td, NULL, worker, filename);
+
+...
+
+
+}
+
+void *worker (void *arg){
+char *fname = (char*) arg;
+...
+
+sleep(delay); //gotta do this for a bit
+//the main dispatcher is not sleeping. Data clobbering because these two functions are sharing the same variable. 
+//We're sharing this var, what can happen?
+
+//need to strcpy instead of just sleeping

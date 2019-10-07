@@ -1,0 +1,6 @@
+DEADLOCK:
+    strategies dealing with deadlock
+        -ignore it (ostridge method)
+        -prevent: deny one of the conditions
+        -avoid: "Pretend" to grant, check safety of state
+        -detect + recover: find the deadlock the recover the program (look for cycles) check deadlock. recover by either terminating a process or preempt a resource.
