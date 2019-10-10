@@ -18,12 +18,12 @@ int main (int argc, char* argv[])
    int status;
    long int i, loop, temp, *shmPtr;
    int shmId;
-   struct sembuf sembuf;
+   struct sembuf semabuf;
    pid_t pid;
 
-   sembuf.sem_num = 0;
-   sembuf.sem_op = 1;
-   sembuf.sem_flg = 0;
+   semabuf.sem_num = 0;
+   semabuf.sem_op = 1;
+   semabuf.sem_flg = 0;
 
    loop = atoi(argv[1]);
 
@@ -40,16 +40,16 @@ int main (int argc, char* argv[])
    shmPtr[1] = 1;
    if (!(pid = fork())) {
       for (i=0; i<loop; i++) {
-        sembuf.sem_op = -1;
-        sembuf.sem_flg = SEM_UNDO;
-        semop(shmId, &sembuf, 1);
+        semabuf.sem_op = -1;
+        semabuf.sem_flg = SEM_UNDO;
+        semop(shmId, &semabuf, 1);
 
         temp = shmPtr[0];
         shmPtr[0] = shmPtr[1];
         shmPtr[1] = temp;
 
-        sembuf.sem_op = 1;
-        semop(shmId, &sembuf, 1);
+        semabuf.sem_op = 1;
+        semop(shmId, &semabuf, 1);
       }
       if (shmdt (shmPtr) < 0) {
          perror ("just can't let go\n");
@@ -59,16 +59,16 @@ int main (int argc, char* argv[])
    }
    else{
       for (i=0; i<loop; i++) {
-        sembuf.sem_op = -1;
-        sembuf.sem_flg = SEM_UNDO;
-        semop(shmId, &sembuf, 1);
+        semabuf.sem_op = -1;
+        semabuf.sem_flg = SEM_UNDO;
+        semop(shmId, &semabuf, 1);
 
         temp = shmPtr[1];
         shmPtr[1] = shmPtr[0];
         shmPtr[0] = temp;
 
-        sembuf.sem_op = 1;
-        semop(shmId, &sembuf, 1);
+        semabuf.sem_op = 1;
+        semop(shmId, &semabuf, 1);
       }
     }
    wait (&status);
