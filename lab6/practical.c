@@ -6,9 +6,11 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
+#include <sys/sem.h>
 
 #define SIZE 16
 
+//sem_t mutex;
 
 //FREE YOUR RESOURCES, MAKE SURE EVERY LINE OF CODE IS USED
 int main (int argc, char* argv[])
@@ -16,7 +18,12 @@ int main (int argc, char* argv[])
    int status;
    long int i, loop, temp, *shmPtr;
    int shmId;
+   struct sembuf sembuf;
    pid_t pid;
+
+   sembuf.sem_num = 0;
+   sembuf.sem_op = 1;
+   sembuf.sem_flg = 0;
 
    loop = atoi(argv[1]);
 
@@ -33,9 +40,16 @@ int main (int argc, char* argv[])
    shmPtr[1] = 1;
    if (!(pid = fork())) {
       for (i=0; i<loop; i++) {
+        sembuf.sem_op = -1;
+        sembuf.sem_flg = SEM_UNDO;
+        semop(shmId, &sembuf, 1);
+
         temp = shmPtr[0];
         shmPtr[0] = shmPtr[1];
         shmPtr[1] = temp;
+
+        sembuf.sem_op = 1;
+        semop(shmId, &sembuf, 1);
       }
       if (shmdt (shmPtr) < 0) {
          perror ("just can't let go\n");
@@ -45,9 +59,16 @@ int main (int argc, char* argv[])
    }
    else{
       for (i=0; i<loop; i++) {
+        sembuf.sem_op = -1;
+        sembuf.sem_flg = SEM_UNDO;
+        semop(shmId, &sembuf, 1);
+
         temp = shmPtr[1];
         shmPtr[1] = shmPtr[0];
         shmPtr[0] = temp;
+
+        sembuf.sem_op = 1;
+        semop(shmId, &sembuf, 1);
       }
     }
    wait (&status);
@@ -61,6 +82,8 @@ int main (int argc, char* argv[])
       perror ("can't deallocate\n");
       exit(1);
    }
+
+   semctl(shmId, 0, IPC_RMID);
 
    return 0;
 }
