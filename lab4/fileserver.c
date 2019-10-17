@@ -24,6 +24,7 @@ int main(int argc, char* argv[]){
 	char input[50];
 	int status;
 	signal(SIGINT, handler);
+	void *result;
 
 	while(1){
 	//User input and prompt
@@ -39,15 +40,18 @@ int main(int argc, char* argv[]){
 	}
 	numberOfRequests++;
 
+	//}
+	if ((status = pthread_join (dispatcher, &result)) != 0){
+		fprintf(stderr, "join error on dispatcher %d: %s\n", status, strerror(status));
 	}
-
+}
 	return 0;
 }
 
 void* createWorker(void* arg){
 	pthread_t wt1;
 	int status;
-
+	void *result2;
 	char *workerName = (char *) arg;
 
 	// Make a loop for amount of child threads spawned and set name from array created above. 
@@ -57,7 +61,9 @@ void* createWorker(void* arg){
 		fprintf(stderr, "Failed to create worker. Error %d: %s\n", status, strerror(status));
 		exit(1);
 	}
-
+	if ((status = pthread_join (wt1, &result2)) != 0){
+		fprintf (stderr, "join error on worker %d: %s\n", status, strerror(status));
+	}
 	return NULL;
 }
 
