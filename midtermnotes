@@ -4,3 +4,27 @@ DEADLOCK:
         -prevent: deny one of the conditions
         -avoid: "Pretend" to grant, check safety of state
         -detect + recover: find the deadlock the recover the program (look for cycles) check deadlock. recover by either terminating a process or preempt a resource.
+
+turn = 0;
+
+Writer
+while(T){
+	while(turn == 1)
+	  ;
+	get_input();
+	write_shared_M();
+	turn = 1;
+   }
+
+Reader
+while(T){
+	while(turn == 0)
+	  ;
+	read_shared_M();
+	print_msg();
+	turn = 0;
+  }
+
+Cannot put a sleep bc timing is not allowed, it will fail somehow.
+A good solution is to use two variables to determine who's turn it is. 
+	Writer/Reader both would set turn0 = 1 and turn1 = 1
