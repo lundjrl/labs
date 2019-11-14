@@ -44,7 +44,7 @@ int main(int argc, char *argv[]){
           }
 
            stat(entryPtr->d_name, &statBuf);
-           printf("%ld\n", statBuf.st_blksize);
+           //printf("%d\n", statBuf.st_blocks);
            printf((S_ISDIR(statBuf.st_mode)) ? "d" : "-");
            printf((statBuf.st_mode & S_IRUSR) ? "r" : "-");
            printf((statBuf.st_mode & S_IWUSR) ? "w" : "-");
@@ -55,7 +55,7 @@ int main(int argc, char *argv[]){
            printf((statBuf.st_mode & S_IROTH) ? "r" : "-");
            printf((statBuf.st_mode & S_IWOTH) ? "w" : "-");
            printf((statBuf.st_mode & S_IXOTH) ? "x" : "-");
-           printf("%ld\t", statBuf.st_nlink);
+           printf("\t%ld\t", statBuf.st_nlink);
            printf("%d\t", statBuf.st_uid);
            printf("%d\t", statBuf.st_gid);
 
