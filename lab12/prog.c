@@ -17,6 +17,13 @@ int main(int argc, char *argv[])
       perror ("huh?  there is ");
       exit(1);
    }
+   
+   if (S_ISDIR(statBuf.st_mode)){
+      printf("Directory\n");
+   }
+   else{
+      printf("Regular file\n");
+   }
 
    printf ("value is: %u\n", statBuf.st_mode);
    return 0;
