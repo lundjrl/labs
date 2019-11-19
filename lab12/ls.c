@@ -44,7 +44,6 @@ int main(int argc, char *argv[]){
           }
 
            stat(entryPtr->d_name, &statBuf);
-           //printf("%d\n", statBuf.st_blocks);
            printf((S_ISDIR(statBuf.st_mode)) ? "d" : "-");
            printf((statBuf.st_mode & S_IRUSR) ? "r" : "-");
            printf((statBuf.st_mode & S_IWUSR) ? "w" : "-");
@@ -59,7 +58,7 @@ int main(int argc, char *argv[]){
            printf("%d\t", statBuf.st_uid);
            printf("%d\t", statBuf.st_gid);
 
-           totalBlocks += statBuf.st_size;
+           totalBlocks += statBuf.st_blocks;
            printf("%ld\t", statBuf.st_size);
 
            timeStruct = *localtime(&statBuf.st_mtim.tv_sec);
@@ -79,7 +78,7 @@ int main(int argc, char *argv[]){
 
     if(multiArgs){
       if(strcmp(argv[1], "-n") == 0){
-        printf("Total: %ld\n", (totalBlocks/1024));
+        printf("Total: %ld\n", (totalBlocks/2));
       }
     }
 
