@@ -18,24 +18,30 @@ int main(int argc, char *argv[]){
     char buf[80];
 
     // See how many arguments are passed and if it is an option or directory
+    // Must pass in option and then directory
+
     if(argc == 1){
       dirPtr = opendir(".");
       multiArgs = 0;
-    } else {
+    } else if(argc == 2){
       if(argv[1] != NULL && argv[1][0] != '-'){
         dirPtr = opendir(argv[1]);
-      }
-
-
-      if(argv[2] == NULL){
+        printf("Here open: %s\n", argv[1]);
+      } else if(argv[1] != NULL && argv[1][0] == '-'){
         dirPtr = opendir(".");
-      } else {
-        dirPtr = opendir(argv[2]);
       }
-
+    } else if(argc == 3){
+        if(argv[2] == NULL){
+          dirPtr = opendir(".");
+        } else {
+          dirPtr = opendir(argv[2]);
+        }
+    } else {
+        printf("Too many arguments provided\n");
+        exit(1);
     }
 
-    while((entryPtr = readdir (dirPtr))){
+    while((entryPtr = readdir(dirPtr))){
       if(multiArgs){
         if(strcmp(argv[1], "-n") == 0){
 
@@ -75,6 +81,7 @@ int main(int argc, char *argv[]){
         printf("name: %-20s\n", entryPtr->d_name);
       }
     }
+    closedir(dirPtr);
 
     if(multiArgs){
       if(strcmp(argv[1], "-n") == 0){
