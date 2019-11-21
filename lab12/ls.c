@@ -48,8 +48,8 @@ int main(int argc, char *argv[]){
           if((strcmp(entryPtr->d_name, ".") == 0) || (strcmp(entryPtr->d_name, "..") == 0)){
             continue;
           }
-
            stat(entryPtr->d_name, &statBuf);
+           stat(argv[2], &statBuf);
            printf((S_ISDIR(statBuf.st_mode)) ? "d" : "-");
            printf((statBuf.st_mode & S_IRUSR) ? "r" : "-");
            printf((statBuf.st_mode & S_IWUSR) ? "w" : "-");
